@@ -1,26 +1,18 @@
 package com.example.user.breakout.math;
 
 public class Vector2 {
-    private float x, y;
-    
-    public void setPoint(float x, float y){ this.x = x; this.y = y;}
-    public void setX(float x) { this.x = x;}
-    public void setY(float y) { this.y = y;}
-    public float X() { return x;}
-    public float Y() { return y;}
+    public float x, y;
     public Vector2(){}
     public Vector2(float x, float y) { this.x = x; this.y = y;}
+    public float mag(){  return (float)Math.sqrt((float)Math.pow(x,2) + (float) Math.pow(y,2)); }
+    public double angle() { return Math.atan2(y,x); }
 
-    /* Arithmetic */
-    public void incX(float amount) { this.x += amount;}
-    public void decX(float amount) { this.x -= amount;}
-    public void multX(float amount) {this.x *= amount;}
+    public void setAngle(double angle){
+        float length = mag();
+        x = (float)(Math.cos(angle) * length);
+        y = (float)(Math.sin(angle) * length);
+    }
 
-    public void incY(float amount) { this.y += amount;}
-    public void decY(float amount) { this.y -= amount;}
-    public void multY(float amount) {this.y *= amount;}
 
-    /* Neg */
-    public void negX() { this.x = -this.x; }
-    public void negY() { this.y = -this.y; }
+
 }

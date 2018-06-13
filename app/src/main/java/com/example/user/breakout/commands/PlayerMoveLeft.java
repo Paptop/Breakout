@@ -1,6 +1,9 @@
-package com.example.user.breakout;
+package com.example.user.breakout.commands;
 
-public class PlayerMoveLeft implements Command{
+import com.example.user.breakout.gameobjects.PlayerPaddle;
+import com.example.user.breakout.PlayerState;
+
+public class PlayerMoveLeft implements Command {
     private PlayerPaddle player;
     public float acc = 0f;
     public PlayerMoveLeft(PlayerPaddle paddle){
@@ -9,9 +12,9 @@ public class PlayerMoveLeft implements Command{
 
     @Override
     public void execute() {
-        if(player.coord.x > 0) {
+        if(player.getCoord().x > 0) {
             player.currentState = PlayerState.MOVING_LEFT;
-            player.coord.x -= 20 + acc;
+            player.getCoord().x -= 20 + acc;
             acc += 10f;
         }
     }

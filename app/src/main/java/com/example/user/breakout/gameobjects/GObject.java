@@ -1,4 +1,4 @@
-package com.example.user.breakout;
+package com.example.user.breakout.gameobjects;
 
 import android.graphics.Canvas;
 

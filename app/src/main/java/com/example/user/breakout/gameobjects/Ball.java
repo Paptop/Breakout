@@ -1,10 +1,12 @@
-package com.example.user.breakout;
+package com.example.user.breakout.gameobjects;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.example.user.breakout.math.GMath;
+import com.example.user.breakout.Constants;
+import com.example.user.breakout.graphics.AssetManager;
+import com.example.user.breakout.level.Level;
 import com.example.user.breakout.math.Vector2;
 
 import java.util.Random;
@@ -20,8 +22,9 @@ public class Ball implements GObject {
     private int radius;
 
     private Level level;
-
     private PlayerPaddle player;
+
+    private Bitmap texture;
 
     public Ball(Level level, int x, int y, PlayerPaddle player){
         this(level);
@@ -39,6 +42,7 @@ public class Ball implements GObject {
         velocity = new Vector2();
         velocity.x = 20f ;velocity.y = 20f ;
         this.level = level;
+        texture = AssetManager.getInstance().getRecource("Ball");
 
     }
 
@@ -59,8 +63,9 @@ public class Ball implements GObject {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawCircle(coord.x, coord.y, radius + 10, boundsPaint);
-        canvas.drawCircle(coord.x, coord.y, radius, paint);
+        //canvas.drawCircle(coord.x, coord.y, radius + 10, boundsPaint);
+        //canvas.drawCircle(coord.x, coord.y, radius, paint);
+        canvas.drawBitmap(texture,coord.x,coord.y,paint);
     }
 
     @Override

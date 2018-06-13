@@ -1,4 +1,6 @@
-package com.example.user.breakout;
+package com.example.user.breakout.commands;
+
+import com.example.user.breakout.commands.Command;
 
 public class CommandController {
     private Command command;

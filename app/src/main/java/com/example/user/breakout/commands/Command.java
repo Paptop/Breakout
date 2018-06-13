@@ -1,4 +1,4 @@
-package com.example.user.breakout;
+package com.example.user.breakout.commands;
 
 public interface Command {
     public void execute();

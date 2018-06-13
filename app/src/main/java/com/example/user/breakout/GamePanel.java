@@ -2,10 +2,16 @@ package com.example.user.breakout;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.example.user.breakout.gameobjects.Background;
+import com.example.user.breakout.gameobjects.Ball;
+import com.example.user.breakout.gameobjects.GObject;
+import com.example.user.breakout.gameobjects.PlayerPaddle;
+import com.example.user.breakout.graphics.AssetManager;
+import com.example.user.breakout.level.Level;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,10 +22,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<GObject> gameObjects;
 
 
+
     private Random rand = new Random();
 
     public GamePanel(Context context){
         super(context);
+        Constants.CURRENT_CONTEXT = context;
+        AssetManager assetManager = AssetManager.getInstance();
+        Level level = new Level();
+        playerPaddle = new PlayerPaddle(level);
+        gameObjects = new ArrayList<>();
+        gameObjects.add(new Background());
+        gameObjects.add(playerPaddle); // [0] is the player;
+        gameObjects.add(level);
+        gameObjects.add(new Ball(level, 200,1200,playerPaddle));
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
@@ -79,12 +95,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         thread = new MainThread(getHolder(), this);
         thread.setRunning(true);
-        Level level = new Level();
-        playerPaddle = new PlayerPaddle(level);
-        gameObjects = new ArrayList<>();
-        gameObjects.add(level);
-        gameObjects.add(playerPaddle); // [0] is the player;
-        gameObjects.add(new Ball(level, 200,800,playerPaddle));
+
         thread.start();
     }
 

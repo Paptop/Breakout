@@ -1,20 +1,20 @@
 package com.example.user.breakout.level;
 
 import android.graphics.Canvas;
-import android.os.Vibrator;
 
 import com.example.user.breakout.Constants;
+import com.example.user.breakout.GamePanel;
+import com.example.user.breakout.GameState;
 import com.example.user.breakout.gameobjects.Ball;
 import com.example.user.breakout.gameobjects.GObject;
 import com.example.user.breakout.gameobjects.Paddle;
 import com.example.user.breakout.gameobjects.PlayerPaddle;
+import com.example.user.breakout.gameobjects.StrongPaddle;
 import com.example.user.breakout.hud.Hud;
 import com.example.user.breakout.sound.SoundPlayer;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class Level implements GObject {
 
@@ -22,17 +22,14 @@ public class Level implements GObject {
     protected Ball ball;
     protected PlayerPaddle player;
     protected ArrayList<GObject> levelObjects;
-
 // HUD
     protected Hud hud;
-
 // Level stuff
     protected ArrayList<Paddle> paddles;
     protected int width, height;
     public Random rand;
     public ArrayList<Paddle> getLevel() { return paddles;}
     public LevelDescription currentLevel;
-
 // Sound
 
 
@@ -53,17 +50,13 @@ public class Level implements GObject {
         'g', 'g', 'g', 'g' , 'g', 'g', 'g', 'g','g',
         'b', 'b', 'b', 'b' , 'b', 'b', 'b', 'b','b',
         'p', 'p', 'p', 'p' , 'p', 'p', 'p', 'p','p',
-        '#', '#', 'r', 'r', 'r' , 'r', 'r', '#', '#',
-        '#', 'r', 'r', 'r', 'r' , 'r', 'r', 'r', '#',
-        'r', 'r', 'r', 'r' , 'r', 'r', 'r', 'r', 'r',
-        '#', 'r', 'r', 'r', 'r' , 'r', 'r', 'r', '#',
-        '#', '#', 'r', 'r', 'r' , 'r', 'r', '#', '#',
-        '#', '#', '#', 'r', 'r' , 'r', '#', '#', '#',
+
     };
 
 
     private char[] Level2 = {
 
+       'G', '#', 'R', '#', '#' , 'R', '#', 'G', '#',
        '#', '#', '#', '#', 'r' , '#', '#', '#', '#',
        '#', '#', '#', 'r', 'r' , 'r', '#', '#', '#',
        '#', '#', 'r', 'r', 'b' , 'r', 'r', '#', '#',
@@ -76,12 +69,23 @@ public class Level implements GObject {
 
     };
 
-    private char[] DebugLevel = {
-        '#', 'r', '#', '#', '#' , '#', '#', '#', '#',
+    private char[] Level3 = {
+        'r', 'r', 'r', 'r', 'r' , 'r', 'r', 'r', 'r',
+        'b', 'b', 'b', 'b', 'b' , 'b', 'b', 'b', 'b',
+        'g', 'g', 'g', 'g', 'g' , 'g', 'g', 'g', 'g',
+        'o', 'o', 'o', 'o', 'o' , 'o', 'o', 'o', 'o',
+        'O', '#', 'O', '#', '#' , 'O', '#', '#', 'O',
+        'p', 'R', '#', 'R', '#' , 'R', '#', 'R', '#',
+        'p', 'p', 'p', 'p', 'p' , 'p', 'p', 'p', 'p',
+        '#', 'p', 'p', 'p', 'p' , 'p', 'p', 'p', '#',
+        '#', '#', 'p', 'p', 'p' , 'p', 'p', '#', '#',
+        '#', '#', '#', 'p', 'p' , 'p', '#', '#', '#',
+        '#', '#', '#', '#', 'p' , '#', '#', '#', '#',
+
     };
 
     private LevelDescription level1Mars;
-    private LevelDescription debugLevel;
+    private LevelDescription level3Doom;
     private LevelDescription level2Waterfall;
 
     private ArrayList<LevelDescription> levelQueue;
@@ -122,23 +126,23 @@ public class Level implements GObject {
                         break;
 
                     case 'R':
-                        paddles.add(new Paddle(this, x, y,
+                        paddles.add(new StrongPaddle(this, x, y,
                                 "PaddleRed"));
                         break;
                     case 'B':
-                        paddles.add(new Paddle(this, x, y,
+                        paddles.add(new StrongPaddle(this, x, y,
                                 "PaddleBlue"));
                         break;
                     case 'G':
-                        paddles.add(new Paddle(this, x, y,
+                        paddles.add(new StrongPaddle(this, x, y,
                                 "PaddleGreen"));
                         break;
                     case 'O':
-                        paddles.add(new Paddle(this, x, y,
+                        paddles.add(new StrongPaddle(this, x, y,
                                 "PaddleGold"));
                         break;
                     case 'P':
-                        paddles.add(new Paddle(this, x, y,
+                        paddles.add(new StrongPaddle(this, x, y,
                                 "PaddlePurple"));
                         break;
                     case '#':
@@ -152,23 +156,57 @@ public class Level implements GObject {
 
     }
 
+    public void onCollision(Paddle p,int index){
+        switch(p.getType()){
+            case STANDART:
+                paddles.remove(index);
+                break;
+            case STRONG:
+                if(p.onCollision()){
+                    paddles.remove(index);
+                }
+                break;
+        }
+    }
+
+    public void restartLevel(){
+        generateLevel(currentLevel);
+    }
+
     public void damageToPlayer(){
         try {
             SoundPlayer.healthloss();
             Thread.sleep(2000);
             if(player.damagePlayer()){
+                GamePanel.currentState = GameState.GAME_OVER;
                 SoundPlayer.playGameOver();
                 // Goto state end;
             }else{
-                hud.update(player.getHitpoints());
+                hud.update(player.getHitPoints());
             }
+            setGameObjectsDefaults();
         }catch(InterruptedException exc){exc.printStackTrace(); }
-        initGameObjects();
+    }
+
+    public void playerScored(){
+        hud.update(String.format("%06d", player.getScore()));
+    }
+
+    public void setGameObjectsDefaults(){
+        ball.coord.x = 500; ball.coord.y = 1200;
+        ball.velocity.x = Constants.BALL_VELOCITY_X;
+        ball.velocity.y = Constants.BALL_VELOCITY_Y;
     }
 
     public void initGameObjects(){
        levelObjects.clear();
-       ball.coord.x = 200; ball.coord.y = 1200;
+       ball.coord.x = 500; ball.coord.y = 1200;
+       ball.velocity.x = Constants.BALL_VELOCITY_X;
+       ball.velocity.y = Constants.BALL_VELOCITY_Y;
+       player.resetHealth();
+       player.resetScore();
+       hud.update(player.getHitPoints());
+       hud.update(player.getScore());
        levelObjects.add(ball);
        levelObjects.add(player);
     }
@@ -184,29 +222,29 @@ public class Level implements GObject {
         this.player = new PlayerPaddle(this);
         this.ball = new Ball(this, 200, 1200,player);
         this.levelObjects = new ArrayList<>();
+        this.hud = new Hud(this);
 
         // Check how many bricks in a row and a col screen can handle
         this.width = Constants.SCREEN_WIDTH / Constants.DEFAULT_PADDLE_WIDTH - 1;
         this.height = Constants.DEFAULT_LEVEL_HEIGHT + 5;
 
         // Init level queue
-        level1Mars = new LevelDescription("Level : Mars", Level1, "MarsBg", 9, 18);
-        debugLevel = new LevelDescription(" Level : Debug ", DebugLevel, "MarsBg", 9, 1);
+        level1Mars = new LevelDescription("Level1: Mars", Level1, "MarsBg", 9, 12);
+        level3Doom = new LevelDescription(" Level3: Doom ", Level3, "MarsBg", 9, 10);
+        level2Waterfall = new LevelDescription("Level2: WaterFall", Level2, "MarsBg", 9, 10);
         // Set level1 as default
-        currentLevel = generateLevel(debugLevel);
-        this.hud = new Hud(this);
+        currentLevel = generateLevel(level1Mars);
 
-        level2Waterfall = new LevelDescription("Level : WaterFall", Level2, "MarsBg", 9, 9);
         //levelQueue.add(level1Mars);
         levelQueue.add(level2Waterfall);
-        levelQueue.add(level1Mars);
+        levelQueue.add(level3Doom);
+        //levelQueue.add(level1Mars);
     }
 
 
     public void switchLevel(){
         levelQueue.add(currentLevel);
         currentLevel = levelQueue.remove(0);
-        hud.setDescription(currentLevel);
         try {
             Thread.sleep(3000);
         }catch(InterruptedException exc){exc.printStackTrace(); }
@@ -229,6 +267,7 @@ public class Level implements GObject {
     public void tick() {
         hud.tick();
         if(paddles.size() == 0){
+            SoundPlayer.playLevelPass();
             switchLevel();
             generateLevel(currentLevel);
             return;

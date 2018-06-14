@@ -13,6 +13,12 @@ public class Vector2 {
         y = (float)(Math.sin(angle) * length);
     }
 
+    public void setMag(float mag){
+        double angle = angle();
+        x = (float)(Math.cos(angle) * mag);
+        y = (float)(Math.sin(angle) * mag);
+    }
+
 
 
 }

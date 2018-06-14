@@ -12,6 +12,9 @@ public class Constants {
     public static Context CURRENT_CONTEXT;
 
     public static int BALL_RADIUS = 30;
+    public static int BALL_VELOCITY_X = 10;
+    public static int BALL_VELOCITY_Y =  15;
+    public static int SPEED_INCREASE = 2;
 
     public static int DEFAULT_PADDLE_WIDTH = 100;
     public static int DEFAULT_PADDLE_HEIGHT = 50;
@@ -21,8 +24,6 @@ public class Constants {
 
     public static int DEFAULT_PLAYER_PADDLE_WIDTH = 200;
     public static int DEFAULT_PLAYER_PADDLE_HEIGHT = 50;
-    public static int DEFAULT_PLAYER_SPEED = 20;
-    public static int DEFAULT_PLAYER_ACC = 5;
 
 
     public static int GUI_OFFSET;

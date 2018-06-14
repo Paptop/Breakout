@@ -17,7 +17,11 @@ public class Paddle implements GObject {
     protected Paint paint;
     protected Level level;
     protected Bitmap texture;
+    protected PaddleType type;
 
+    public PaddleType getType() { return type; }
+
+    public void setType(PaddleType type) { this.type = type; }
 
     public Vector2 getCoord() { return coord; }
 
@@ -36,6 +40,7 @@ public class Paddle implements GObject {
     public void setPaint(Paint paint) { this.paint = paint; }
 
     public Paddle(Level level){
+        type = PaddleType.STANDART;
         coord = new Vector2();
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -64,6 +69,10 @@ public class Paddle implements GObject {
        coord.x = x; coord.y = y;
        this.texture = AssetManager.getInstance().getRecource(texture);
     }
+
+
+    // Virtual method
+    public boolean onCollision(){ return false;}
 
     @Override
     public void draw(Canvas canvas) {

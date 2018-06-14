@@ -7,6 +7,7 @@ import com.example.user.breakout.sound.SoundPlayer;
 
 public class MainThread extends Thread{
     public static final int MAX_FPS = 30;
+
     private SurfaceHolder surfaceHolder;
     private GamePanel gamePanel;
     private boolean running;
@@ -27,9 +28,7 @@ public class MainThread extends Thread{
 
     }
 
-    /* Main loop of a game
-       using Notch tech
-    */
+    /* Main loop of a game */
     public void run(){
        long starttime;
        long timeMillis = 1000/MAX_FPS;

@@ -24,6 +24,7 @@ public class Ball implements GObject {
     private Level level;
     private PlayerPaddle player;
     private Bitmap texture;
+    private int collisionCount = 0;
 
     private boolean cornerCollision ;
 
@@ -68,19 +69,20 @@ public class Ball implements GObject {
     @Override
     public void draw(Canvas canvas) {
         //canvas.drawCircle(coord.x, coord.y, radius + 10, boundsPaint);
-        canvas.drawCircle(coord.x, coord.y, radius, paint);
+        //canvas.drawCircle(coord.x, coord.y, radius, paint);
         canvas.drawBitmap(texture,coord.x - radius,coord.y - radius,paint);
     }
 
+
     @Override
     public void tick() {
-        cornerCollision = false;
-        if(coord.x >= (float)Constants.LEVEL_WIDTH|| coord.x < (float)radius ){
+
+        if(coord.x > (float)Constants.LEVEL_WIDTH - radius || coord.x < (float)radius ){
             //paint.setARGB(255,rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
             SoundPlayer.playWallSound();
             velocity.x = -velocity.x;
         }
-        if( coord.y < (float)Constants.GUI_OFFSET){
+        if( coord.y < (float)Constants.GUI_OFFSET + radius){
             //paint.setARGB(255,rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
             SoundPlayer.playWallSound();
             velocity.y = -velocity.y;
@@ -94,99 +96,135 @@ public class Ball implements GObject {
 
         for(int i = 0; i < level.getLevel().size(); i++){
            Paddle p = level.getLevel().get(i);
+           cornerCollision = false;
            if(collision(p)){
+              collisionCount++;
+              // increase speed over time
+              if(collisionCount % 3 == 0)
+                  velocity.setMag( velocity.mag() + Constants.SPEED_INCREASE);
               SoundPlayer.playPaddleHitSound();
+              player.incScore(1);
+              level.playerScored();
+              // Special case corner
+              if(cornerCollision){
+                  velocity.setAngle(-(Math.PI - angle));
+                  coord.x += velocity.x;
+                  coord.y += velocity.y;
+                  level.onCollision(p,i);
+                  return;
+              }
               if(coord.x == p.coord.x + p.width/2){
-                  /*
-                  if(angle > 0)
-                      velocity.setAngle(- (Math.PI / 6) );
-                  else
-                      velocity.setAngle((Math.PI / 6) );
-                      */
                   velocity.setAngle(-angle);
                }
                else if (coord.x > p.coord.x &&
                        coord.x < p.coord.x + p.width/2){
 
-                  /*
-                  if(angle > 0)
-                      velocity.setAngle(- (Math.PI) / 8);
-                  else
-                      velocity.setAngle( (Math.PI) / 8 );
-                      */
-
                   velocity.setAngle(-angle);
                }
                else if (coord.x > p.coord.x + p.width/ 2 &&
                        coord.x < (p.coord.x  + p.width)){
-                  /*
-                  if(angle > 0)
-                      velocity.setAngle(- (Math.PI) / 12);
-                  else
-                      velocity.setAngle((Math.PI) / 12);
-                      */
+
                   velocity.setAngle(-angle);
                }
-               level.getLevel().remove(i);
+               level.onCollision(p,i);
            }
         }
 
+        cornerCollision = false;
         if(collision(player)){
             SoundPlayer.playPlayerHitSound();
+            // Ball direction left or right false means right, true left
+            boolean direction = false;
+            if(angle > 0 && angle <= Math.PI / 2)
+                direction = false;
+            else
+                direction = true;
             if(cornerCollision){
-                velocity.setAngle(-(Math.PI - angle));
+                if(!direction) {
+                    velocity.setAngle(-(Math.PI - angle));
+                }else{
+                    velocity.setAngle(-(Math.PI - angle));
+                }
                 coord.x += velocity.x;
                 coord.y += velocity.y;
                 return;
             }
-            /*
+/*
             if(angle > 0 && angle < Math.PI / 2)
                 velocity.setAngle(-(Math.PI / 2.5));
             else if (angle > 0 && angle > Math.PI / 2)
-                velocity.setAngle(-( Math.PI - Math.PI / 2.5));
+                velocity.setAngle(-( 5 * Math.PI / 6));
                 */
 
-            switch(player.currentState){
+
+            switch(player.currentState) {
                 case MOVING_RIGHT:
-                    //if(coord.x > player.getCoord().x && coord.x < player.coord.x + player.width/3){
-                        if(angle > 0 && angle <= Math.PI / 2)
-                            //velocity.setAngle(- 2 * Math.PI / 3);
-                            velocity.setAngle(-Math.PI / 2.7);
-                        else if (angle > 0 && angle >= Math.PI / 2)
-                            velocity.setAngle(-( Math.PI - Math.PI / 2.5));
-                    //}
+                    if (coord.x > player.getCoord().x && coord.x < player.coord.x + player.width / 3) {
+                        //velocity.setAngle(- 2 * Math.PI / 3);
+                        //velocity.setAngle(-Math.PI / 2.3);
+                        if (!direction) {
+                            velocity.setAngle(-(Math.PI / 3));
+                        } else {
+                            velocity.setAngle(-(Math.PI * 2 / 2.3));
+                        }
+                    } else if (coord.x > player.coord.x + player.width / 3 &&
+                            coord.x < ((player.coord.x + player.width) * 2) / 3) {
+                        if (!direction) {
+                            velocity.setAngle(-angle);
+                        } else {
+                            velocity.setAngle(-(2 * Math.PI / 2.2));
+                        }
+
+                    } else if (coord.x > ((player.coord.x + player.width) * 2) / 3 &&
+                            coord.x < (player.coord.x + player.width)) {
+                        if (!direction) {
+                            velocity.setAngle(-Math.PI / 6);
+                        } else {
+                            //velocity.setAngle(-( Math.PI - Math.PI / 2.5));
+                            velocity.setAngle(-(Math.PI / 2.2));
+                        }
+                    }
+
                     break;
 
                 case MOVING_LEFT:
-                    //if(coord.x > player.getCoord().x && coord.x < player.coord.x + player.width/3){
-                        if(angle > 0 && angle <= Math.PI / 2)
-                            velocity.setAngle(-Math.PI / 2.7);
-                        else if (angle > 0 && angle >= Math.PI / 2)
-                            //velocity.setAngle(-(Math.PI * 2 / 3));
-                            velocity.setAngle(-( Math.PI - Math.PI / 2.5));
-                    //}
+                    if (coord.x > player.getCoord().x && coord.x < player.coord.x + player.width / 3) {
+                        if (!direction) {
+                            velocity.setAngle(-(Math.PI / 2.5));
+                        } else {
+                            velocity.setAngle(-(5 * Math.PI / 6));
+                        }
+                    } else if (coord.x > player.coord.x + player.width / 3 &&
+                            coord.x < ((player.coord.x + player.width) * 2) / 3) {
+                        if (!direction) {
+                            velocity.setAngle(-(Math.PI / 2.3));
+                        } else {
+                            velocity.setAngle(-angle);
+                        }
+                    } else if (coord.x > ((player.coord.x + player.width) * 2) / 3 &&
+                            coord.x < (player.coord.x + player.width)) {
+                        if (!direction) {
+                            velocity.setAngle(-(Math.PI / 2.3));
+                        } else {
+                            velocity.setAngle(-(Math.PI * 2 / 3));
+                        }
+                    }
                     break;
-                    /*
-                    if(coord.x == player.coord.x + player.width/2){
-                        velocity.setAngle(-angle);
-                    }
-                    else if (coord.x > player.coord.x &&
-                        coord.x < player.coord.x + player.width/2){
-                        velocity.setAngle(-angle);
-                    }
-                    else if (coord.x > player.coord.x + player.width/ 2 &&
-                        coord.x < (player.coord.x  + player.width)){
-                        velocity.setAngle(-angle);
-                    }
-                    break;
-                    */
-
             }
+
 
 
         }
         // Move the ball
         coord.x += velocity.x;
         coord.y += velocity.y;
+/*
+        if(coord.x > Constants.LEVEL_WIDTH){
+            coord.x = Constants.LEVEL_WIDTH - radius * 2;
+        }
+        if(coord.x < 0){
+            coord.x += radius * 2;
+        }
+        */
     }
 }

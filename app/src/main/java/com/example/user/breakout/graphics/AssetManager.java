@@ -40,6 +40,8 @@ public class AssetManager {
         // Backgrounds
         Bitmap background = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(),R.drawable.marsbg);
         Bitmap guibg = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(),R.drawable.guibg);
+        Bitmap gameover1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(),R.drawable.gameover1);
+        Bitmap gameover2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(),R.drawable.gameover2);
         // Player and objects
         Bitmap player = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(),R.drawable.paddleplayer);
         Bitmap paddlered = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.paddlered);
@@ -70,23 +72,23 @@ public class AssetManager {
                 Constants.DEFAULT_PLAYER_PADDLE_HEIGHT, false));
         // Paddles
         allResources.put("PaddleRed", Bitmap.createScaledBitmap(paddlered,
-                Constants.DEFAULT_PADDLE_WIDTH,
+                Constants.DEFAULT_PLAYER_PADDLE_WIDTH,
                 Constants.DEFAULT_PADDLE_HEIGHT,
                 false));
         allResources.put("PaddleBlue", Bitmap.createScaledBitmap(paddleblue,
-                Constants.DEFAULT_PADDLE_WIDTH,
+                Constants.DEFAULT_PLAYER_PADDLE_WIDTH,
                 Constants.DEFAULT_PADDLE_HEIGHT,
                 false));
         allResources.put("PaddleGreen", Bitmap.createScaledBitmap(paddlegreen,
-                Constants.DEFAULT_PADDLE_WIDTH,
+                Constants.DEFAULT_PLAYER_PADDLE_WIDTH,
                 Constants.DEFAULT_PADDLE_HEIGHT,
                 false));
         allResources.put("PaddlePurple", Bitmap.createScaledBitmap(paddlepurple,
-                Constants.DEFAULT_PADDLE_WIDTH,
+                Constants.DEFAULT_PLAYER_PADDLE_WIDTH,
                 Constants.DEFAULT_PADDLE_HEIGHT,
                 false));
         allResources.put("PaddleGold", Bitmap.createScaledBitmap(paddlegold,
-                Constants.DEFAULT_PADDLE_WIDTH,
+                Constants.DEFAULT_PLAYER_PADDLE_WIDTH,
                 Constants.DEFAULT_PADDLE_HEIGHT,
                 false));
 
@@ -141,6 +143,16 @@ public class AssetManager {
         allResources.put("GuiBg", Bitmap.createScaledBitmap(guibg,
                 Constants.SCREEN_WIDTH,
                 Constants.GUI_OFFSET,
+                false));
+
+        allResources.put("GameOver1", Bitmap.createScaledBitmap(gameover1,
+                Constants.SCREEN_WIDTH,
+                Constants.SCREEN_HEIGHT,
+                false));
+
+        allResources.put("GameOver2", Bitmap.createScaledBitmap(gameover2,
+                Constants.SCREEN_WIDTH,
+                Constants.SCREEN_HEIGHT,
                 false));
         /*
         allResources.put("DefaultBall0",

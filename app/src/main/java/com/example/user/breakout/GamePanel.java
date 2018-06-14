@@ -11,6 +11,7 @@ import com.example.user.breakout.gameobjects.Ball;
 import com.example.user.breakout.gameobjects.GObject;
 import com.example.user.breakout.gameobjects.PlayerPaddle;
 import com.example.user.breakout.graphics.AssetManager;
+import com.example.user.breakout.hud.GameOverScreen;
 import com.example.user.breakout.level.Level;
 import com.example.user.breakout.sound.SoundPlayer;
 
@@ -18,20 +19,24 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
+    public static GameState currentState;
     private MainThread thread;
     private SoundPlayer soundPlayer;
     private PlayerPaddle playerPaddle;
     private Level level;
+    private GameOverScreen gameOverScreen;
 
     public MainThread getMainThread() { return thread; }
 
     public GamePanel(Context context){
         super(context);
         Constants.CURRENT_CONTEXT = context;
+        currentState = GameState.PLAYING;
         AssetManager.getInstance();
         level = new Level();
         playerPaddle = level.getPlayer();
         soundPlayer = new SoundPlayer();
+        gameOverScreen = new GameOverScreen();
         getHolder().addCallback(this);
        // thread = new MainThread(getHolder(), this);
         setFocusable(true);
@@ -44,13 +49,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                float x = event.getX();
-                float y = event.getY();
-                if(x <= Constants.SCREEN_WIDTH / 2){
-                    playerPaddle.controller.setCommand( playerPaddle.moveLeft);
-                }
-                if(x > Constants.SCREEN_WIDTH/ 2){
-                    playerPaddle.controller.setCommand( playerPaddle.moveRight);
+                switch(currentState) {
+                    case PLAYING:
+                        float x = event.getX();
+                        float y = event.getY();
+                        if (x <= Constants.SCREEN_WIDTH / 2) {
+                            playerPaddle.controller.setCommand(playerPaddle.moveLeft);
+                        }
+                        if (x > Constants.SCREEN_WIDTH / 2) {
+                            playerPaddle.controller.setCommand(playerPaddle.moveRight);
+                        }
+                        break;
+
+                    case GAME_OVER:
+                        level.restartLevel();
+                        currentState = GameState.PLAYING;
+                        break;
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -62,16 +76,32 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         return true;
     }
 
+
+
     @Override
     public void draw(Canvas canvas){
         super.draw(canvas);
-        level.draw(canvas);
+        switch(currentState){
+            case PLAYING:
+                level.draw(canvas);
+                break;
+            case GAME_OVER:
+                gameOverScreen.draw(canvas);
+                break;
+        }
     }
 
 
     public void tick(){
         // Update all gameObjects
-        level.tick();
+        switch(currentState){
+            case PLAYING:
+                level.tick();
+                break;
+            case GAME_OVER:
+                gameOverScreen.tick();
+                break;
+        }
     }
 
 

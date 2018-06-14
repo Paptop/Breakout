@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import com.example.user.breakout.Constants;
-import com.example.user.breakout.graphics.Animation;
 import com.example.user.breakout.graphics.AssetManager;
 import com.example.user.breakout.level.Level;
 import com.example.user.breakout.PlayerState;
@@ -13,7 +12,6 @@ import com.example.user.breakout.commands.CommandController;
 import com.example.user.breakout.commands.PlayerMoveLeft;
 import com.example.user.breakout.commands.PlayerMoveRight;
 import com.example.user.breakout.commands.PlayerMoveStop;
-import com.example.user.breakout.sound.SoundPlayer;
 
 public class PlayerPaddle extends Paddle {
 
@@ -25,20 +23,34 @@ public class PlayerPaddle extends Paddle {
 
     public PlayerState currentState = PlayerState.MOVING_STOP;
 
-    private int hitpoints = 4;
-    public int getHitpoints() { return hitpoints; }
+    private int hitPoints = 4;
+    private int score = 0;
+
+    public int getHitPoints() { return hitPoints; }
+    public int getScore() { return score; }
 
     public boolean damagePlayer(){
-        hitpoints--;
-        if(hitpoints == 0) return true;
+        hitPoints--;
+        if(hitPoints == 0) return true;
         else return false;
     }
 
     public void healPlayer(){
-        if(hitpoints < 4)
-        hitpoints++;
+        if(hitPoints < 4)
+        hitPoints++;
     }
 
+    public void incScore(int amount){
+        score += amount;
+    }
+
+    public void resetScore(){
+        score = 0;
+    }
+
+    public void resetHealth(){
+        hitPoints = 4;
+    }
 
     public Bitmap texture;
     public PlayerPaddle(Level level){

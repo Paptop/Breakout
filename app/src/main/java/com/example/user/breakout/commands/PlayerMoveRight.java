@@ -3,6 +3,7 @@ package com.example.user.breakout.commands;
 import com.example.user.breakout.Constants;
 import com.example.user.breakout.gameobjects.PlayerPaddle;
 import com.example.user.breakout.PlayerState;
+import com.example.user.breakout.sound.SoundPlayer;
 
 public class PlayerMoveRight implements Command {
    private PlayerPaddle player;
@@ -14,9 +15,14 @@ public class PlayerMoveRight implements Command {
 
     @Override
     public void execute() {
-       if( player.getCoord().x + player.getWidth() < Constants.SCREEN_WIDTH) {
+       float index = 20f + acc;
+       if( player.getCoord().x + player.getWidth()   < Constants.SCREEN_WIDTH) {
            player.currentState = PlayerState.MOVING_RIGHT;
-           player.getCoord().x += 20 + acc;
+           player.getCoord().x += 20f + acc;
+           // If we acc for too much
+           if(player.getCoord().x + player.getWidth() > Constants.SCREEN_WIDTH){
+               player.getCoord().x = Constants.SCREEN_WIDTH - player.getWidth();
+           }
            acc += 10f;
        }
     }

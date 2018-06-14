@@ -13,6 +13,7 @@ import com.example.user.breakout.commands.CommandController;
 import com.example.user.breakout.commands.PlayerMoveLeft;
 import com.example.user.breakout.commands.PlayerMoveRight;
 import com.example.user.breakout.commands.PlayerMoveStop;
+import com.example.user.breakout.sound.SoundPlayer;
 
 public class PlayerPaddle extends Paddle {
 
@@ -24,9 +25,22 @@ public class PlayerPaddle extends Paddle {
 
     public PlayerState currentState = PlayerState.MOVING_STOP;
 
+    private int hitpoints = 4;
+    public int getHitpoints() { return hitpoints; }
+
+    public boolean damagePlayer(){
+        hitpoints--;
+        if(hitpoints == 0) return true;
+        else return false;
+    }
+
+    public void healPlayer(){
+        if(hitpoints < 4)
+        hitpoints++;
+    }
+
 
     public Bitmap texture;
-
     public PlayerPaddle(Level level){
         super(level, Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT - 100,
                 Constants.DEFAULT_PLAYER_PADDLE_WIDTH,

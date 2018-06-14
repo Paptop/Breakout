@@ -12,41 +12,32 @@ import com.example.user.breakout.gameobjects.GObject;
 import com.example.user.breakout.gameobjects.PlayerPaddle;
 import com.example.user.breakout.graphics.AssetManager;
 import com.example.user.breakout.level.Level;
+import com.example.user.breakout.sound.SoundPlayer;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
+    private SoundPlayer soundPlayer;
     private PlayerPaddle playerPaddle;
-    private ArrayList<GObject> gameObjects;
+    private Level level;
 
-
-
-    private Random rand = new Random();
+    public MainThread getMainThread() { return thread; }
 
     public GamePanel(Context context){
         super(context);
         Constants.CURRENT_CONTEXT = context;
-        AssetManager assetManager = AssetManager.getInstance();
-        Level level = new Level();
-        playerPaddle = new PlayerPaddle(level);
-        gameObjects = new ArrayList<>();
-        gameObjects.add(new Background());
-        gameObjects.add(playerPaddle); // [0] is the player;
-        gameObjects.add(level);
-        gameObjects.add(new Ball(level, 200,1200,playerPaddle));
+        AssetManager.getInstance();
+        level = new Level();
+        playerPaddle = level.getPlayer();
+        soundPlayer = new SoundPlayer();
         getHolder().addCallback(this);
-        thread = new MainThread(getHolder(), this);
+       // thread = new MainThread(getHolder(), this);
         setFocusable(true);
 
 
-
     }
-
-
-
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
@@ -74,29 +65,36 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas){
         super.draw(canvas);
-
-        // Rendering all gameObjects
-        for(GObject gameObj : gameObjects){
-            gameObj.draw(canvas);
-        }
+        level.draw(canvas);
     }
 
 
     public void tick(){
         // Update all gameObjects
-        for(GObject gameObj : gameObjects){
-            gameObj.tick();
-        }
+        level.tick();
     }
 
 
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        /*
+        if(thread == null) {
+            thread = new MainThread(getHolder(), this);
+            thread.setRunning(true);
+            thread.start();
+        }else {
+            if(!thread.isRunning()) {
+                thread.setRunning(true);
+                thread.start();
+            }
+            */
+
         thread = new MainThread(getHolder(), this);
         thread.setRunning(true);
-
         thread.start();
+
+
     }
 
     @Override
@@ -106,15 +104,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        boolean retry = true;
-        while(true){
-            try{
-                thread.setRunning(false);
-                thread.join();
-            } catch(Exception e){
-                e.printStackTrace();;
-            }
-            retry = false;
+        try{
+            thread.setRunning(false);
+            thread.join();
+        } catch(Exception e){
+             e.printStackTrace();
         }
     }
 }

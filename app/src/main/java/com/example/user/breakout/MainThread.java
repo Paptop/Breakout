@@ -3,17 +3,22 @@ package com.example.user.breakout;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import com.example.user.breakout.sound.SoundPlayer;
+
 public class MainThread extends Thread{
     public static final int MAX_FPS = 30;
     private SurfaceHolder surfaceHolder;
     private GamePanel gamePanel;
     private boolean running;
+    private boolean paused;
     private double averageFps;
     public Canvas canvas;
 
 
-    public void setRunning(boolean bool){ this.running = bool; }
 
+    public void setRunning(boolean bool){ this.running = bool; }
+    public void setPaused(boolean bool){ this.paused = bool; }
+    public boolean isRunning(){ return this.running;}
 
     public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel){
         super();
@@ -42,9 +47,10 @@ public class MainThread extends Thread{
               synchronized (surfaceHolder){
 
                   /* Meat of the loop */
-
-                  this.gamePanel.tick();
-                  this.gamePanel.draw(canvas);
+                  if(!paused) {
+                      this.gamePanel.tick();
+                      this.gamePanel.draw(canvas);
+                  }
               }
            }catch(Exception e) {
                e.printStackTrace();

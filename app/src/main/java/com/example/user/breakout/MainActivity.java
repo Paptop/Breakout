@@ -10,12 +10,14 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class MainActivity extends Activity {
+    private GamePanel panel;
 
     protected void setScreenWidthHeight(){
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         Constants.SCREEN_HEIGHT = displayMetrics.heightPixels;
         Constants.SCREEN_WIDTH  = displayMetrics.widthPixels;
+        Constants.GUI_OFFSET = Constants.SCREEN_HEIGHT / 5;
     }
 
     @Override
@@ -25,7 +27,11 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setScreenWidthHeight();
-        setContentView(new GamePanel(this));
+        this.panel = new GamePanel(this);
+        setContentView(panel);
 
     }
+
+
+
 }

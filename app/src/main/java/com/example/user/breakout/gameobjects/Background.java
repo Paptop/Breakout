@@ -13,8 +13,8 @@ public class Background implements GObject {
     private Paint paint;
     private boolean flag = true;
 
-    public Background(){
-        texture = AssetManager.getInstance().getRecource("Background");
+    public Background(String textureId){
+        texture = AssetManager.getInstance().getRecource(textureId);
         texture = Bitmap.createScaledBitmap(texture,
                 Constants.SCREEN_WIDTH,
                 Constants.SCREEN_HEIGHT,false);

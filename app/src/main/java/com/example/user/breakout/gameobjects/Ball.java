@@ -16,8 +16,6 @@ public class Ball implements GObject {
 
     public Vector2 coord;
     public Vector2 velocity;
-
-
     private Paint paint;
     private Paint boundsPaint;
     private int radius;
@@ -218,13 +216,5 @@ public class Ball implements GObject {
         // Move the ball
         coord.x += velocity.x;
         coord.y += velocity.y;
-/*
-        if(coord.x > Constants.LEVEL_WIDTH){
-            coord.x = Constants.LEVEL_WIDTH - radius * 2;
-        }
-        if(coord.x < 0){
-            coord.x += radius * 2;
-        }
-        */
     }
 }

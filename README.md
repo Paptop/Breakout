@@ -1,5 +1,6 @@
 ### Breakout
 ## Breakout game is CAPPED TO 30 fps, android documentation suggested
+Target resolution full hd.
 ## Future improvements
 1) Move sound system to another thread
 2) Refactor basic functionality of Ball and Paddle in separate abstract class

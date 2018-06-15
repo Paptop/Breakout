@@ -16,4 +16,4 @@ GamePanel is the wrapper for gameloop with its own states
 
 ## Screenshot
 
-![alt text](https://github.com/Paptop/Breakout/edit/master/Level1.png
+![alt text](https://github.com/Paptop/Breakout/edit/master/Level1.png)

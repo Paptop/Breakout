@@ -91,7 +91,9 @@ public class Ball implements GObject {
         }
 
         double angle = velocity.angle();
-
+        
+        // Check collision for all paddles in the level
+        // Using naive approach
         for(int i = 0; i < level.getLevel().size(); i++){
            Paddle p = level.getLevel().get(i);
            cornerCollision = false;
@@ -127,7 +129,7 @@ public class Ball implements GObject {
                level.onCollision(p,i);
            }
         }
-
+        //Check collision with the player
         cornerCollision = false;
         if(collision(player)){
             SoundPlayer.playPlayerHitSound();

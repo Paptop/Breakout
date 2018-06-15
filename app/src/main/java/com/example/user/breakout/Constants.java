@@ -13,7 +13,7 @@ public class Constants {
 
     public static int BALL_RADIUS = 30;
     public static int BALL_VELOCITY_X = 10;
-    public static int BALL_VELOCITY_Y =  15;
+    public static int BALL_VELOCITY_Y =  10;
     public static int SPEED_INCREASE = 2;
 
     public static int DEFAULT_PADDLE_WIDTH = 100;

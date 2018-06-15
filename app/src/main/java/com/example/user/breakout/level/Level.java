@@ -22,18 +22,18 @@ public class Level implements GObject {
     protected Ball ball;
     protected PlayerPaddle player;
     protected ArrayList<GObject> levelObjects;
+
 // HUD
     protected Hud hud;
+
 // Level stuff
     protected ArrayList<Paddle> paddles;
     protected int width, height;
     public Random rand;
     public ArrayList<Paddle> getLevel() { return paddles;}
     public LevelDescription currentLevel;
+
 // Sound
-
-
-
     public PlayerPaddle getPlayer() { return player; }
     public Ball getBall() { return ball; }
 
@@ -47,7 +47,7 @@ public class Level implements GObject {
         '#', '#', 'r', 'r', 'r' , 'r', 'r', '#', '#',
         '#', '#', '#', 'r', 'r' , 'r', '#', '#', '#',
         '#', '#', '#', '#', 'r' , '#', '#', '#', '#',
-        'g', 'g', 'g', 'g' , 'g', 'g', 'g', 'g','g',
+        'G', '#', 'G', '#' , '#', 'G', '#', 'G','#',
         'b', 'b', 'b', 'b' , 'b', 'b', 'b', 'b','b',
         'p', 'p', 'p', 'p' , 'p', 'p', 'p', 'p','p',
 
@@ -151,9 +151,7 @@ public class Level implements GObject {
                 }
             }
         }
-
         return description;
-
     }
 
     public void onCollision(Paddle p,int index){
@@ -193,14 +191,14 @@ public class Level implements GObject {
     }
 
     public void setGameObjectsDefaults(){
-        ball.coord.x = 500; ball.coord.y = 1200;
+        ball.coord.x = 200; ball.coord.y = 1200;
         ball.velocity.x = Constants.BALL_VELOCITY_X;
         ball.velocity.y = Constants.BALL_VELOCITY_Y;
     }
 
     public void initGameObjects(){
        levelObjects.clear();
-       ball.coord.x = 500; ball.coord.y = 1200;
+       ball.coord.x = 200; ball.coord.y = 1200;
        ball.velocity.x = Constants.BALL_VELOCITY_X;
        ball.velocity.y = Constants.BALL_VELOCITY_Y;
        player.resetHealth();

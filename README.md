@@ -13,3 +13,7 @@ Target resolution full hd.
 Main Thread is the gameloop. Level is a manage of game entities and paddle placement.
 Commands are used to move the player paddle. GObject is the main interface for game entities.
 GamePanel is the wrapper for gameloop with its own states
+
+## Screenshot
+
+![alt text](https://github.com/Paptop/Breakout/edit/master/Level1.png

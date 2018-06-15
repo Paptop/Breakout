@@ -5,6 +5,7 @@
 2) Refactor basic functionality of Ball and Paddle in separate abstract class
 3) Add PowerUps
 4) Fix small bugs with collision and impact
+5) The tick methods of entities such as ball,paddle can be decoupled is to small sections
 
 ## Structure
 Main Thread is the gameloop. Level is a manage of game entities and paddle placement.
